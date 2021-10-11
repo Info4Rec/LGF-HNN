@@ -137,9 +137,9 @@ class Data(Dataset):
         u_input, mask, target = self.inputs[index], self.mask[index], self.targets[index]
 
         max_n_node = self.max_len
-        node = np.unique(u_input)  # 独立的item节点ID
-        items = node.tolist() + (max_n_node - len(node)) * [0]  # 独特的节点ID + 0
-        adj = np.zeros((max_n_node, max_n_node))  # 会话最大长度*会话最大长度的0矩阵
+        node = np.unique(u_input)  
+        items = node.tolist() + (max_n_node - len(node)) * [0]  
+        adj = np.zeros((max_n_node, max_n_node))  
         for i in np.arange(len(u_input) - 1):
             u = np.where(node == u_input[i])[0][0]
             adj[u][u] = 1
@@ -155,18 +155,18 @@ class Data(Dataset):
             else:
                 adj[u][v] = 2
                 adj[v][u] = 3
-        # 节点自己的adj为1，节点与自己下一项为3，节点与自己的上一项为2
+      
         alias_inputs = [np.where(node == i)[0][0] for i in u_input]
-        # 类似于mask 但是不是用111来标识节点 不同的节点有不同的标识
+        
         return torch.tensor(alias_inputs), torch.tensor(adj), torch.tensor(items), torch.tensor(mask), torch.tensor(target), torch.tensor(u_input)
 
     def __getitem__(self, index):
         u_input, mask, target = self.inputs[index], self.mask[index], self.targets[index]
 
         max_n_node = self.max_len
-        node = np.unique(u_input)  # 独立的item节点ID
-        items = node.tolist() + (max_n_node - len(node)) * [0]  # 0+独特的节点ID
-        adj = np.zeros((max_n_node, max_n_node))  # 会话最大长度*会话最大长度的0矩阵
+        node = np.unique(u_input)  
+        items = node.tolist() + (max_n_node - len(node)) * [0]  
+        adj = np.zeros((max_n_node, max_n_node)) 
         for i in np.arange(len(u_input) - 1):
             u = np.where(node == u_input[i])[0][0]
             adj[u][u] = 1
@@ -182,9 +182,9 @@ class Data(Dataset):
             else:
                 adj[u][v] = 2
                 adj[v][u] = 3
-        # 节点自己的adj为1，节点与自己下一项为3，节点与自己的上一项为2
+
         alias_inputs = [np.where(node == i)[0][0] for i in u_input]
-        # 类似于mask 但是不是用111来标识节点 不同的节点有不同的标识
+
         hg_adj = np.zeros((max_n_node, max_n_node))
         for i in range(node.shape[0]):
             for j in range(node.shape[0]):
