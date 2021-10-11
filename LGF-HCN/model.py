@@ -128,7 +128,6 @@ class CombineGraph(Module):
         session_info = []
         item_emb = self.embedding(item) * mask_item.float().unsqueeze(-1)
 
-        # mean 均值化会话内向量？
         sum_item_emb = torch.sum(item_emb, 1) / torch.sum(mask_item.float(), -1).unsqueeze(-1)
 
 
@@ -252,7 +251,7 @@ def train_test(model, train_data, test_data,sslrate):
         model.Eiters += 1
         targets = trans_to_cuda(targets).long()
         loss = model.loss_function(scores, targets - 1)
-        loss = loss + 0.01*ssl_loss
+        loss = loss + sslrate*ssl_loss
         # with torch.autograd.detect_anomaly():
         loss.backward()
         model.optimizer.step()
